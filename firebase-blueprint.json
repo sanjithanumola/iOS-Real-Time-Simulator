@@ -1,0 +1,153 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with simulator phone identity",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "phoneNumber": { "type": "string", "maxLength": 30 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "statusMessage": { "type": "string", "maxLength": 150 },
+        "isOnline": { "type": "boolean" },
+        "lastSeen": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "displayName", "phoneNumber"]
+    },
+    "Contact": {
+      "title": "Contact",
+      "description": "User address book contact",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 100 },
+        "phoneNumber": { "type": "string", "maxLength": 30 },
+        "email": { "type": "string", "maxLength": 150 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "isFavorite": { "type": "boolean" },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "name", "phoneNumber"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Chat thread between simulator users",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "participantIds": { "type": "array" },
+        "participantDetails": { "type": "object" },
+        "lastMessageText": { "type": "string", "maxLength": 1000 },
+        "lastMessageTime": { "type": "string" },
+        "lastMessageSenderId": { "type": "string" },
+        "unreadCounts": { "type": "object" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["participantIds"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Individual message in a conversation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "conversationId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string", "maxLength": 100 },
+        "text": { "type": "string", "maxLength": 2000 },
+        "type": { "type": "string", "enum": ["text", "image", "voice"] },
+        "mediaUrl": { "type": "string", "maxLength": 100000 },
+        "timestamp": { "type": "string" },
+        "reactions": { "type": "object" },
+        "replyTo": { "type": "object" }
+      },
+      "required": ["senderId", "text", "timestamp"]
+    },
+    "Call": {
+      "title": "Call",
+      "description": "WebRTC Call session for audio or FaceTime video call",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "callerId": { "type": "string" },
+        "callerName": { "type": "string", "maxLength": 100 },
+        "callerPhone": { "type": "string", "maxLength": 30 },
+        "callerPhoto": { "type": "string", "maxLength": 500 },
+        "receiverId": { "type": "string" },
+        "receiverName": { "type": "string", "maxLength": 100 },
+        "receiverPhone": { "type": "string", "maxLength": 30 },
+        "callType": { "type": "string", "enum": ["audio", "video"] },
+        "status": { "type": "string", "enum": ["ringing", "accepted", "declined", "ended", "missed"] },
+        "offer": { "type": "object" },
+        "answer": { "type": "object" },
+        "createdAt": { "type": "string" },
+        "endedAt": { "type": "string" },
+        "duration": { "type": "number" }
+      },
+      "required": ["callerId", "receiverId", "callType", "status"]
+    },
+    "IceCandidate": {
+      "title": "IceCandidate",
+      "description": "WebRTC ICE candidate for peer connection establishment",
+      "type": "object",
+      "properties": {
+        "candidate": { "type": "object" },
+        "senderId": { "type": "string" },
+        "type": { "type": "string", "enum": ["caller", "receiver"] },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["candidate", "senderId", "type"]
+    },
+    "CallLog": {
+      "title": "CallLog",
+      "description": "Phone call history entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "peerId": { "type": "string" },
+        "peerName": { "type": "string", "maxLength": 100 },
+        "peerPhone": { "type": "string", "maxLength": 30 },
+        "peerPhoto": { "type": "string", "maxLength": 500 },
+        "direction": { "type": "string", "enum": ["incoming", "outgoing", "missed"] },
+        "callType": { "type": "string", "enum": ["audio", "video"] },
+        "duration": { "type": "number" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["peerPhone", "direction", "callType", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Public simulator user profile"
+    },
+    "/users/{userId}/contacts/{contactId}": {
+      "schema": "Contact",
+      "description": "Contacts saved by user"
+    },
+    "/users/{userId}/call_logs/{logId}": {
+      "schema": "CallLog",
+      "description": "Call history log for user"
+    },
+    "/conversations/{conversationId}": {
+      "schema": "Conversation",
+      "description": "Active conversation metadata"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages inside a conversation"
+    },
+    "/calls/{callId}": {
+      "schema": "Call",
+      "description": "Real-time WebRTC audio and video calling sessions"
+    },
+    "/calls/{callId}/candidates/{candidateId}": {
+      "schema": "IceCandidate",
+      "description": "WebRTC ICE signaling candidates"
+    }
+  }
+}

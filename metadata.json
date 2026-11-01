@@ -1,0 +1,9 @@
+{
+  "name": "iOS Real-Time Simulator",
+  "description": "A high-fidelity real-time Apple iPhone simulator featuring simulated phone identities, WebRTC calling, FaceTime, iMessage messaging, Contacts, Dynamic Island, and native iOS applications.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
